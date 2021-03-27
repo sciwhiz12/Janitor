@@ -4,7 +4,6 @@ plugins {
 apply from: 'version.gradle'
 
 group = "tk.sciwhiz12.janitor"
-archivesBaseName = "janitor-bot"
 version = versionInfo["version"] ?: "unknown"
 println("Version: $version")
 
@@ -27,6 +26,7 @@ application {
 }
 
 jar {
+    archivesBaseName = "janitor-bot"
     manifest {
         attributes([
                 "Specification-Title"   : "Janitor",
