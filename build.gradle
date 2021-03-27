@@ -12,6 +12,13 @@ repositories {
 }
 
 dependencies {
+    implementation "net.dv8tion:JDA:$jda_ver"
+    implementation "com.google.guava:guava:$guava_ver"
+    implementation "com.fasterxml.jackson.core:jackson-core:$jackson_ver"
+    implementation "com.fasterxml.jackson.core:jackson-annotations:$jackson_ver"
+    implementation "com.fasterxml.jackson.core:jackson-databind:$jackson_ver"
+    implementation "ch.qos.logback:logback-classic:$logback_ver"
+    
     testImplementation "org.junit.jupiter:junit-jupiter:$junit_ver"
 }
 
