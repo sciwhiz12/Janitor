@@ -18,6 +18,9 @@ dependencies {
     implementation "com.fasterxml.jackson.core:jackson-annotations:$jackson_ver"
     implementation "com.fasterxml.jackson.core:jackson-databind:$jackson_ver"
     implementation "ch.qos.logback:logback-classic:$logback_ver"
+    implementation "com.electronwill.night-config:toml:$nightconfig_ver"
+    implementation "it.unimi.dsi:fastutil:$fastutil_ver"
+    implementation "net.sf.jopt-simple:jopt-simple:$jopt_ver"
     
     testImplementation "org.junit.jupiter:junit-jupiter:$junit_ver"
 }
@@ -29,7 +32,7 @@ java {
 }
 
 application {
-    mainClass = 'tk.sciwhiz12.janitor.App'
+    mainClass = 'tk.sciwhiz12.janitor.bot.BotStartup'
 }
 
 jar {

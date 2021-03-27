@@ -1,0 +1,13 @@
+# Bot-specific configuration for Janitor
+# These configurations are read-only, and will not be modified
+
+# The bot client token, used when connecting to the Discord API.
+# Must be specified, either here or using the command line interface.
+token = ""
+
+# List of snowflake IDs of users who act as bot owners.
+# Bot owners have access to bot maintenance commands, along with specific admin commands for troubleshooting
+# May be unspecified. Defaults to sciwhiz12#1286, maintainer of Janitor
+owners = [ 607058472709652501 ]
+
+
