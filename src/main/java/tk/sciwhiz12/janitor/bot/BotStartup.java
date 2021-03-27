@@ -42,20 +42,35 @@
 
 package tk.sciwhiz12.janitor.bot;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import tk.sciwhiz12.janitor.JanitorBot;
 import tk.sciwhiz12.janitor.bot.config.BotFileConfig;
-import tk.sciwhiz12.janitor.bot.config.BotOptions;
 import tk.sciwhiz12.janitor.bot.config.CommandLineBotOptions;
 import tk.sciwhiz12.janitor.bot.config.MergedBotOptions;
 
+import javax.security.auth.login.LoginException;
 import java.nio.file.Path;
 
 public class BotStartup {
-    public static void main(String[] args) {
+    private static final Logger LOGGER = LoggerFactory.getLogger(BotStartup.class);
+
+    public static void main(String[] args) throws LoginException {
+        LOGGER.info("Parsing command line options");
         CommandLineBotOptions cmdLine = new CommandLineBotOptions(args);
         Path configFile = cmdLine.getConfigFile();
+        LOGGER.info("Loading config file from {}", configFile.toAbsolutePath());
         BotFileConfig fileConfig = new BotFileConfig(configFile);
 
         BotOptions options = new MergedBotOptions(fileConfig, cmdLine);
+
+        if (options.getToken().isEmpty()) {
+            LOGGER.warn("No bot token found.");
+            LOGGER.warn("Please specify a bot token using the config file or the CLI option.");
+            return;
+        }
+
+        new JanitorBot(options);
     }
 
 }

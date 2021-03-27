@@ -67,15 +67,13 @@ import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.google.common.primitives.Longs;
 import it.unimi.dsi.fastutil.longs.LongArraySet;
 import it.unimi.dsi.fastutil.longs.LongSet;
+import tk.sciwhiz12.janitor.bot.BotOptions;
 
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-/**
- * File-backed bot configuration.
- */
 public class BotFileConfig implements BotOptions {
     private final CommentedFileConfig config;
 

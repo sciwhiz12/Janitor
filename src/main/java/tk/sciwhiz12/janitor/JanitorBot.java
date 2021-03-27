@@ -40,65 +40,57 @@
  * OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package tk.sciwhiz12.janitor.bot.config;
+package tk.sciwhiz12.janitor;
 
-import com.google.common.primitives.Longs;
-import it.unimi.dsi.fastutil.longs.LongArraySet;
-import it.unimi.dsi.fastutil.longs.LongSet;
-import joptsimple.ArgumentAcceptingOptionSpec;
-import joptsimple.OptionParser;
-import joptsimple.OptionSet;
-import joptsimple.util.PathConverter;
-import joptsimple.util.PathProperties;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.OnlineStatus;
+import net.dv8tion.jda.api.events.ReadyEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.requests.GatewayIntent;
+import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import tk.sciwhiz12.janitor.bot.BotOptions;
 
-import javax.annotation.Nullable;
-import java.nio.file.Path;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import javax.security.auth.login.LoginException;
+import java.time.OffsetDateTime;
+import java.util.EnumSet;
+import java.util.Objects;
 
-import static java.util.List.of;
+public class JanitorBot extends ListenerAdapter {
+    public static final Logger LOGGER = LoggerFactory.getLogger(JanitorBot.class);
+    // TODO: fine-tune the gateway intents
+    private static final EnumSet<GatewayIntent> GATEWAY_INTENTS = EnumSet.allOf(GatewayIntent.class);
 
-public class CommandLineBotOptions implements BotOptions {
-    @Nullable
-    private final String token;
-    private final LongSet owners;
-    private final Path configFile;
+    private static final String version = Objects.requireNonNullElse(JanitorBot.class.getPackage().getImplementationVersion(), "DEVELOPMENT-" + OffsetDateTime.now().toString());
 
-    public CommandLineBotOptions(String[] args) {
-        OptionParser parser = new OptionParser();
-        ArgumentAcceptingOptionSpec<String> token = parser.acceptsAll(of("token", "t"), "Discord API token")
-                .withRequiredArg();
-        ArgumentAcceptingOptionSpec<String> owners = parser.acceptsAll(of("owner", "o"), "Snowflake ID(s) of bot owners")
-                .withRequiredArg().withValuesSeparatedBy(',');
-        ArgumentAcceptingOptionSpec<Path> configFile = parser.acceptsAll(of("config", "config-file", "c"), "Bot config file")
-                .withRequiredArg().withValuesConvertedBy(new PathConverter(PathProperties.FILE_EXISTING, PathProperties.WRITABLE))
-                .defaultsTo(Path.of("bot-config.toml"));
+    private final BotOptions options;
+    private final JDA jda;
 
-        OptionSet parsed = parser.parse(args);
+    public JanitorBot(BotOptions options) throws LoginException {
+        LOGGER.info("Starting up Janitor v{}", version);
 
-        this.token = parsed.valueOf(token);
+        this.options = options;
+        final String token = options.getToken().orElseThrow(() -> new IllegalArgumentException("Bot token not found. Supply via config file or CLI option"));
 
-        //noinspection ConstantConditions
-        this.owners = new LongArraySet(parsed.valuesOf(owners).stream()
-                .filter(str -> Longs.tryParse(str) != null)
-                .map(Longs::tryParse)
-                .collect(Collectors.toUnmodifiableList()));
-
-        this.configFile = parsed.valueOf(configFile);
+        this.jda = JDABuilder.createDefault(token, GATEWAY_INTENTS)
+                .setStatus(OnlineStatus.DO_NOT_DISTURB)
+                .addEventListeners(this)
+                .build();
     }
 
     @Override
-    public Optional<String> getToken() {
-        return Optional.ofNullable(this.token);
+    public void onReady(@NotNull ReadyEvent event) {
+        LOGGER.info("Connection is ready");
+        jda.getPresence().setPresence(OnlineStatus.ONLINE, null);
     }
 
-    @Override
-    public Optional<LongSet> getBotOwners() {
-        return this.owners.isEmpty() ? Optional.empty() : Optional.of(this.owners);
+    public BotOptions getOptions() {
+        return options;
     }
 
-    public Path getConfigFile() {
-        return this.configFile;
+    public JDA getJda() {
+        return jda;
     }
 }

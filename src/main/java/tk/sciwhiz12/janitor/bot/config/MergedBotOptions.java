@@ -43,6 +43,7 @@
 package tk.sciwhiz12.janitor.bot.config;
 
 import it.unimi.dsi.fastutil.longs.LongSet;
+import tk.sciwhiz12.janitor.bot.BotOptions;
 
 import java.util.Optional;
 
