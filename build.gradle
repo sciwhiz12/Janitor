@@ -16,6 +16,12 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter:$junit_ver"
 }
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(11)
+    }
+}
+
 application {
     mainClass = 'tk.sciwhiz12.janitor.App'
 }
