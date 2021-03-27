@@ -1,0 +1,38 @@
+plugins {
+    id 'application'
+}
+apply from: 'version.gradle'
+
+group = "tk.sciwhiz12.janitor"
+archivesBaseName = "janitor-bot"
+version = versionInfo["version"] ?: "unknown"
+println("Version: $version")
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation "org.junit.jupiter:junit-jupiter:$junit_ver"
+}
+
+application {
+    mainClass = 'tk.sciwhiz12.janitor.App'
+}
+
+jar {
+    manifest {
+        attributes([
+                "Specification-Title"   : "Janitor",
+                "Specification-Vendor"  : "sciwhiz12",
+                "Specification-Version" : project.version,
+                "Implementation-Title"  : "janitor-bot",
+                "Implementation-Vendor" : "sciwhiz12",
+                "Implementation-Version": project.version,
+                "Commit-Hash"           : versionInfo["hash"] ?: "0000000000000000000000000000000000000000",
+                "Commit-Timestamp"      : versionInfo["timestamp"] ?: "1980-01-01T00:00:00+00:00"
+        ] as LinkedHashMap)
+    }
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
+}
